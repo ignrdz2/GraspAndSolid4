@@ -1,4 +1,4 @@
-﻿//-------------------------------------------------------------------------
+﻿﻿//-------------------------------------------------------------------------
 // <copyright file="Program.cs" company="Universidad Católica del Uruguay">
 // Copyright (c) Programación II. Derechos reservados.
 // </copyright>
@@ -13,6 +13,7 @@ namespace Full_GRASP_And_SOLID
     public class Program
     {
         private static List<Product> productCatalog = new List<Product>();
+
         private static List<Equipment> equipmentCatalog = new List<Equipment>();
 
         public static void Main(string[] args)
@@ -21,21 +22,14 @@ namespace Full_GRASP_And_SOLID
 
             Recipe recipe = new Recipe();
             recipe.FinalProduct = GetProduct("Café con leche");
-            recipe.AddStep(new Step(GetProduct("Café"), 100, GetEquipment("Cafetera"), 120));
-            recipe.AddStep(new Step(GetProduct("Leche"), 200, GetEquipment("Hervidor"), 60));
+            recipe.AddStep(GetProduct("Café"), 100, GetEquipment("Cafetera"), 120);
+            recipe.AddStep(GetProduct("Leche"), 200, GetEquipment("Hervidor"), 60);
 
             IPrinter printer;
-            printer = PrinterCreator.CreateConsolePrinter();
+            printer = new ConsolePrinter();
             printer.PrintRecipe(recipe);
-            printer = PrinterCreator.CreateFilePrinter();
+            printer = new FilePrinter();
             printer.PrintRecipe(recipe);
-            /*
-            Para aplicar el patrón Creator se utilizan clases creadoras para manejar la creación de instancias.
-            De forma que se separan las responsabilidades y ninguna clase está directamente relacionada con la creación de instancias
-            de otras clases.
-
-            Para este caso se crearon las clases creadoras: ProductCreator, EquipmentCreator, RecipeCreator y PrinterCreator.
-            */
         }
 
         private static void PopulateCatalogs()
@@ -50,13 +44,24 @@ namespace Full_GRASP_And_SOLID
 
         private static void AddProductToCatalog(string description, double unitCost)
         {
-            productCatalog.Add(ProductCreator.CreateProduct(description, unitCost));
+            productCatalog.Add(new Product(description, unitCost));
         }
 
         private static void AddEquipmentToCatalog(string description, double hourlyCost)
         {
-            equipmentCatalog.Add(EquipmentCreator.CreateEquipment(description, hourlyCost));
+            equipmentCatalog.Add(new Equipment(description, hourlyCost));
         }
+
+        private static Product ProductAt(int index)
+        {
+            return productCatalog[index] as Product;
+        }
+
+        private static Equipment EquipmentAt(int index)
+        {
+            return equipmentCatalog[index] as Equipment;
+        }
+
         private static Product GetProduct(string description)
         {
             var query = from Product product in productCatalog where product.Description == description select product;

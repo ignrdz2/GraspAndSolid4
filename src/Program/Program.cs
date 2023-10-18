@@ -24,6 +24,8 @@ namespace Full_GRASP_And_SOLID
             recipe.FinalProduct = GetProduct("Café con leche");
             recipe.AddStep(GetProduct("Café"), 100, GetEquipment("Cafetera"), 120);
             recipe.AddStep(GetProduct("Leche"), 200, GetEquipment("Hervidor"), 60);
+            // Recipe tiene en sus atributos una lista de steps, por Creator, recipe tiene que ser la encargada
+            // de instanciar la clase step y no la clase program.
 
             IPrinter printer;
             printer = new ConsolePrinter();

@@ -13,7 +13,6 @@ namespace Full_GRASP_And_SOLID
     public class Program
     {
         private static List<Product> productCatalog = new List<Product>();
-
         private static List<Equipment> equipmentCatalog = new List<Equipment>();
 
         public static void Main(string[] args)
@@ -26,10 +25,17 @@ namespace Full_GRASP_And_SOLID
             recipe.AddStep(new Step(GetProduct("Leche"), 200, GetEquipment("Hervidor"), 60));
 
             IPrinter printer;
-            printer = new ConsolePrinter();
+            printer = PrinterCreator.CreateConsolePrinter();
             printer.PrintRecipe(recipe);
-            printer = new FilePrinter();
+            printer = PrinterCreator.CreateFilePrinter();
             printer.PrintRecipe(recipe);
+            /*
+            Para aplicar el patrón Creator se utilizan clases creadoras para manejar la creación de instancias.
+            De forma que se separan las responsabilidades y ninguna clase está directamente relacionada con la creación de instancias
+            de otras clases.
+
+            Para este caso se crearon las clases creadoras: ProductCreator, EquipmentCreator, RecipeCreator y PrinterCreator.
+            */
         }
 
         private static void PopulateCatalogs()
@@ -44,24 +50,13 @@ namespace Full_GRASP_And_SOLID
 
         private static void AddProductToCatalog(string description, double unitCost)
         {
-            productCatalog.Add(new Product(description, unitCost));
+            productCatalog.Add(ProductCreator.CreateProduct(description, unitCost));
         }
 
         private static void AddEquipmentToCatalog(string description, double hourlyCost)
         {
-            equipmentCatalog.Add(new Equipment(description, hourlyCost));
+            equipmentCatalog.Add(EquipmentCreator.CreateEquipment(description, hourlyCost));
         }
-
-        private static Product ProductAt(int index)
-        {
-            return productCatalog[index] as Product;
-        }
-
-        private static Equipment EquipmentAt(int index)
-        {
-            return equipmentCatalog[index] as Equipment;
-        }
-
         private static Product GetProduct(string description)
         {
             var query = from Product product in productCatalog where product.Description == description select product;
